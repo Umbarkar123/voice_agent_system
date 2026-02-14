@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, Response, session
 from bson import ObjectId
 from flask_pymongo import PyMongo
 
@@ -16,7 +16,6 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from flask import Flask, render_template, request, jsonify, redirect, session, url_for
 from flask_cors import CORS
 from twilio.rest import Client
 from pymongo import MongoClient
@@ -1292,11 +1291,7 @@ def api_submit(api_key):
     # 🔥 STEP 2: CALL AI MODEL
     # ==========================================
     try:
-        import openai
-
-        openai.api_key = OPENAI_API_KEY
-
-        response = openai.ChatCompletion.create(
+        response = client_ai.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": final_prompt},
@@ -1304,7 +1299,7 @@ def api_submit(api_key):
             ]
         )
 
-        ai_reply = response["choices"][0]["message"]["content"]
+        ai_reply = response.choices[0].message.content
 
     except Exception as e:
         ai_reply = "AI processing failed: " + str(e)
