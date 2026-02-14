@@ -7,3 +7,4 @@ twilio
 openai
 python-dotenv
 pytz
+certifi

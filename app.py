@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, Response, session
 from bson import ObjectId
 from flask_pymongo import PyMongo
+import certifi
 
 
 print("RUNNING >>> THIS APP.PY")
@@ -46,8 +47,9 @@ app.secret_key = FLASK_SECRET_KEY
 app.config["MONGO_URI"] = MONGO_URI
 
 # initialize mongo
-mongo = PyMongo(app)
-client = MongoClient(MONGO_URI)
+ca = certifi.where()
+mongo = PyMongo(app, tlsCAFile=ca)
+client = MongoClient(MONGO_URI, tlsCAFile=ca)
 db = client.get_database() # Automatically picks up DB name from URI
 
 if not OPENAI_API_KEY:
